@@ -14,10 +14,10 @@ namespace PokemonReviewApp.Repository
             this._context = context;
         }
 
-        // Método assíncrono para recuperar Pokémons
+        
         public async Task<ICollection<Pokemon>> GetPokemons()
         {
-            // Usando o método assíncrono ToListAsync() para obter os dados de forma não bloqueante
+            
             return await _context.Pokemon.OrderBy(p => p.Id).ToListAsync();
         }
 

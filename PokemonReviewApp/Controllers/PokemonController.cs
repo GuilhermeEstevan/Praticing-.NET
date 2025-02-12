@@ -17,7 +17,7 @@ namespace PokemonReviewApp.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonDto>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonOutputModel>))]
         public async Task<IActionResult> GetPokemons()
         {
             try
@@ -32,7 +32,7 @@ namespace PokemonReviewApp.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(PokemonDto))]
+        [ProducesResponseType(200, Type = typeof(PokemonOutputModel))]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetPokemonById(int id)
         {

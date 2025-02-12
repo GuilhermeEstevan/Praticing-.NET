@@ -2,7 +2,12 @@
 
 namespace PokemonReviewApp.Dto
 {
-    public class CategoryDto
+    public class CategoryInputModel
+    {
+        public string Name { get; set; }
+    }
+
+    public class CategoryOutputModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

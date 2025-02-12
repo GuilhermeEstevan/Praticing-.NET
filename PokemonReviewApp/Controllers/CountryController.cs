@@ -1,37 +1,31 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using PokemonReviewApp.Dto;
-using PokemonReviewApp.Interfaces.Repositories;
-
+using PokemonReviewApp.Interfaces.Services;
 
 namespace PokemonReviewApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryController :ControllerBase
+    public class CountryController : ControllerBase
     {
-        private readonly ICountryRepository _countryRepository;
-        private readonly IOwnerRepository _ownerRepository;
-        private readonly IMapper _mapper;
+        private readonly ICountryService _countryService;
+    
 
-        public CountryController(ICountryRepository countryRepository, IOwnerRepository ownerRepository,IMapper mapper)
+        public CountryController(ICountryService countryService )
         {
-            this._countryRepository = countryRepository;
-            this._ownerRepository = ownerRepository;
-            this._mapper = mapper;
+            _countryService = countryService;
+         
         }
 
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<CountryDto>))]
-        [ProducesResponseType(500)]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<CountryOutputModel>))]
         public async Task<IActionResult> GetCountries()
         {
-            try 
+            try
             {
-                var countries = await _countryRepository.GetCountries();
-                var countriesDto = _mapper.Map<List<CountryDto>>(countries);
-
-                return Ok(countriesDto);
+                var countries = await _countryService.GetCountriesAsync();
+                return Ok(countries);
             }
             catch (Exception ex)
             {
@@ -40,55 +34,45 @@ namespace PokemonReviewApp.Controllers
         }
 
         [HttpGet("{countryId}")]
-        [ProducesResponseType(200, Type = typeof(CountryDto))]
+        [ProducesResponseType(200, Type = typeof(CountryOutputModel))]
         [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> GetCategoryById(int countryId)
+        public async Task<IActionResult> GetCountryById(int countryId)
         {
             try
             {
-                var countryExists = await _countryRepository.CountryExists(countryId);
+                var countryExists = await _countryService.CountryExistsAsync(countryId);
                 if (!countryExists)
                 {
                     return NotFound($"Country with ID {countryId} not found.");
                 }
 
-                var country = await _countryRepository.GetCountry(countryId);
-                var countryDto = _mapper.Map<CountryDto>(country);
-
-                return Ok(countryDto);
+                var country = await _countryService.GetCountryByIdAsync(countryId);
+                return Ok(country);
             }
             catch (Exception ex)
             {
-
                 return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
             }
         }
 
-        [HttpGet("owner/{ownerId}")]
-        [ProducesResponseType(200, Type = typeof(CountryDto))]
+        [HttpGet("pokemonOwner/{ownerId}")]
+        [ProducesResponseType(200, Type = typeof(CountryOutputModel))]
         [ProducesResponseType(404)]
-        [ProducesResponseType(500)]
         public async Task<IActionResult> GetCountryByOwner(int ownerId)
-        { 
-           try
-           {
-                var ownerExists = await _ownerRepository.OwnerExists(ownerId);
-                if (!ownerExists)
-                    return NotFound($"Owner with ID {ownerId} not found.");
-
-                var country = await _countryRepository.GetCountryByOwner(ownerId);
+        {
+            try
+            {
+                var country = await _countryService.GetCountryByOwnerAsync(ownerId);
                 if (country == null)
+                {
                     return NotFound($"Country for Owner with ID {ownerId} not found.");
-
-                var countryDto = _mapper.Map<CountryDto>(country);
-                return Ok(countryDto);
-           }
-            catch(Exception ex)
+                }
+                return Ok(country);
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
             }
-
         }
     }
 }

@@ -8,9 +8,20 @@ namespace PokemonReviewApp.Helper
     {
         public MappinngProfiles()
         {
-            CreateMap<Pokemon, PokemonDto>();
-            CreateMap<Category, CategoryDto>();
-            CreateMap<Country, CountryDto>();
+            // Pokemon
+            CreateMap<Pokemon, PokemonInputModel>();
+            CreateMap<Pokemon, PokemonOutputModel>();
+            // Category
+            CreateMap<Category, CategoryInputModel>();
+            CreateMap<Category, CategoryOutputModel>();
+            // Country
+            CreateMap<Country, CountryInputModel>();
+            CreateMap<Country, CountryOutputModel>();
+            // Owner
+            CreateMap<Owner, OwnerInputModel>();
+            CreateMap<Owner, OwnerOutputModel>();
+    
+
         }
     }
 }

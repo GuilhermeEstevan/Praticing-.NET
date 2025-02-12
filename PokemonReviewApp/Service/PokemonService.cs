@@ -16,16 +16,16 @@ namespace PokemonReviewApp.Services
             _mapper = mapper;
         }
 
-        public async Task<ICollection<PokemonDto>> GetPokemons()
+        public async Task<ICollection<PokemonOutputModel>> GetPokemons()
         {
             var pokemons = await _pokemonRepository.GetPokemons();
-            return _mapper.Map<List<PokemonDto>>(pokemons);
+            return _mapper.Map<List<PokemonOutputModel>>(pokemons);
         }
 
-        public async Task<PokemonDto> GetPokemonById(int id)
+        public async Task<PokemonOutputModel> GetPokemonById(int id)
         {
             var pokemon = await _pokemonRepository.GetPokemonById(id);
-            return _mapper.Map<PokemonDto>(pokemon);
+            return _mapper.Map<PokemonOutputModel>(pokemon);
         }
 
         public async Task<decimal> GetPokemonRating(int pokemonId)
@@ -38,10 +38,10 @@ namespace PokemonReviewApp.Services
             return await _pokemonRepository.PokemonExist(id);
         }
 
-        public async Task<PokemonDto> GetPokemonByName(string name)
+        public async Task<PokemonOutputModel> GetPokemonByName(string name)
         {
             var pokemon = await _pokemonRepository.GetPokemonByName(name);
-            return _mapper.Map<PokemonDto>(pokemon);
+            return _mapper.Map<PokemonOutputModel>(pokemon);
         }
     }
 }
