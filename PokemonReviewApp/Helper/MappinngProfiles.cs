@@ -20,7 +20,15 @@ namespace PokemonReviewApp.Helper
             // Owner
             CreateMap<Owner, OwnerInputModel>();
             CreateMap<Owner, OwnerOutputModel>();
-    
+            // Review
+            CreateMap<Review, ReviewInputModel>();
+            CreateMap<Review, ReviewOutputModel>();
+            CreateMap<Review, ReviewOutputForReviewer>();
+            CreateMap<Review, ReviewSummaryWithReviewerNameOutputModel>();
+            // Reviewer
+            CreateMap<Reviewer, ReviewerInputModel>();
+            CreateMap<Reviewer, ReviewerOutputModel>();
+            CreateMap<Reviewer, ReviewerNameOutputModel>();
 
         }
     }

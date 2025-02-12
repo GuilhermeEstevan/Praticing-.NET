@@ -28,6 +28,11 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IOwnerService, OwnerService>();
+builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
+builder.Services.AddScoped<IReviewService,ReviewService>();
+builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
+builder.Services.AddScoped<IReviewerService,ReviewerService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
