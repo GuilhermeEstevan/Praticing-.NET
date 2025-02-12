@@ -1,0 +1,21 @@
+# Ignorar a pasta bin
+/bin/
+
+# Ignorar a pasta obj
+/obj/
+
+# Ignorar o diretório .vs (Visual Studio)
+.vs/
+
+# Ignorar arquivos de configuração do usuário
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Ignorar arquivos de build
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
