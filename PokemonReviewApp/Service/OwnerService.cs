@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Interfaces.Services;
 using PokemonReviewApp.Models;
+
+
 
 namespace PokemonReviewApp.Services
 {
@@ -10,11 +13,20 @@ namespace PokemonReviewApp.Services
     {
         private readonly IOwnerRepository _ownerRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<OwnerInputModel> _ownerValidator;
+        private readonly ICountryRepository _countryRepository;
 
-        public OwnerService(IOwnerRepository ownerRepository, IMapper mapper)
+        public OwnerService(
+             IOwnerRepository ownerRepository,
+             IMapper mapper,
+             IValidator<OwnerInputModel> ownerValidator,
+             ICountryRepository countryRepository
+        )
         {
-            _ownerRepository = ownerRepository;
-            _mapper = mapper;
+            this._ownerRepository = ownerRepository;
+            this._mapper = mapper;
+            this._ownerValidator = ownerValidator;
+            this._countryRepository = countryRepository;
         }
 
         public async Task<ICollection<OwnerOutputModel>> GetOwners(int pageNumber, int pageSize)
@@ -45,6 +57,36 @@ namespace PokemonReviewApp.Services
         {
             var pokemons = await _ownerRepository.GetPokemonsByOwner(ownerId);
             return _mapper.Map<List<PokemonOutputModel>>(pokemons);
+        }
+
+        public async Task<OwnerOutputModel> CreateOwner(OwnerInputModel ownerInputModel)
+        {
+            var cleanedFirstName = (ownerInputModel.FirstName.Trim().ToLower());
+            var cleanedLastName = Utils.Utils.RemoveAccents(ownerInputModel.LastName.Trim().ToLower());
+            var cleanedGymName = Utils.Utils.RemoveAccents(ownerInputModel.Gym.Trim().ToLower());
+            ownerInputModel.FirstName = cleanedFirstName;
+            ownerInputModel.LastName = cleanedLastName;
+            ownerInputModel.Gym = cleanedGymName;
+
+            var validationResult = await _ownerValidator.ValidateAsync(ownerInputModel);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Owner data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            var country = await _countryRepository.GetCountry(ownerInputModel.CountryId);
+            if (country == null)
+            {
+                throw new ArgumentException("The specified country does not exist.");
+            }
+
+            var owner = _mapper.Map<Owner>(ownerInputModel);
+            owner.Country = country;
+
+            var createdOwner =await _ownerRepository.CreateOwner(owner);
+            return _mapper.Map<OwnerOutputModel>(createdOwner);
+
         }
     }
 }

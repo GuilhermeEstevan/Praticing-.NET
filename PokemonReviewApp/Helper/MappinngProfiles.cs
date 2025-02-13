@@ -9,7 +9,7 @@ namespace PokemonReviewApp.Helper
         public MappinngProfiles()
         {
             // Pokemon
-            CreateMap<Pokemon, PokemonInputModel>();
+            CreateMap<PokemonInputModel, Pokemon>();
             CreateMap<Pokemon, PokemonOutputModel>();
             // Category
             CreateMap<CategoryInputModel, Category>();
@@ -18,18 +18,20 @@ namespace PokemonReviewApp.Helper
             CreateMap<CountryInputModel, Country>();
             CreateMap<Country, CountryOutputModel>();
             // Owner
-            CreateMap<Owner, OwnerInputModel>();
+            CreateMap<OwnerInputModel, Owner>()
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => new Country { Id = src.CountryId }));
             CreateMap<Owner, OwnerOutputModel>();
             // Review
-            CreateMap<Review, ReviewInputModel>();
+            CreateMap<ReviewInputModel, Review>();
             CreateMap<Review, ReviewOutputModel>();
             CreateMap<Review, ReviewOutputForReviewer>();
             CreateMap<Review, ReviewSummaryWithReviewerNameOutputModel>();
             // Reviewer
-            CreateMap<Reviewer, ReviewerInputModel>();
+            CreateMap<ReviewerInputModel, Reviewer>();
             CreateMap<Reviewer, ReviewerOutputModel>();
             CreateMap<Reviewer, ReviewerNameOutputModel>();
-
+            // PokemonOwner
+            CreateMap<PokemonOwnerInputModel, PokemonOwner>();
         }
     }
 }

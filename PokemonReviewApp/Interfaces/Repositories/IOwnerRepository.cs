@@ -9,5 +9,6 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<ICollection<Owner>> GetOwnersByPokemon(int pokemonId);
         Task<ICollection<Pokemon>> GetPokemonsByOwner(int ownerId);
         Task<bool> OwnerExists(int ownerId);
+        Task<Owner> CreateOwner(Owner owner);
     }
 }

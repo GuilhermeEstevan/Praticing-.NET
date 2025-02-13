@@ -21,7 +21,14 @@ builder.Configuration.AddEnvironmentVariables();
 // Configurações de serviços e outros
 
 // Validators
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true; // Desabilita a validação automática
+    });
+
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CategoryValidator>());
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<OwnerValidator>());
 
 
 
@@ -40,6 +47,8 @@ builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
 builder.Services.AddScoped<IReviewService,ReviewService>();
 builder.Services.AddScoped<IReviewerRepository, ReviewerRepository>();
 builder.Services.AddScoped<IReviewerService,ReviewerService>();
+builder.Services.AddScoped<IPokemonOwnerRepository, PokemonOwnerRepository>();
+builder.Services.AddScoped<IPokemonOwnerService, PokemonOwnerService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

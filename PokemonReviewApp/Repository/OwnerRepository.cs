@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.Metrics;
+using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp.Data;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Models;
@@ -54,6 +55,14 @@ namespace PokemonReviewApp.Repository
         public async Task<bool> OwnerExists(int ownerId)
         {
             return await _context.Owners.AnyAsync(o => o.Id == ownerId);
+        }
+
+        public async Task<Owner> CreateOwner(Owner owner)
+        {
+            _context.Owners.Add(owner);
+            await _context.SaveChangesAsync();
+            return owner;
+
         }
     }
 }

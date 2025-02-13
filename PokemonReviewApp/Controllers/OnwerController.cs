@@ -93,7 +93,33 @@ namespace PokemonReviewApp.Controllers
             }
         }
 
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(OwnerOutputModel))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> CreateOwner([FromBody] OwnerInputModel ownerInputModel)
+        {
+            if (ownerInputModel == null)
+            {
+                return BadRequest(new { error = "Invalid data." });
+            }
 
+            try
+            {
+                var createdOwner = await _ownerService.CreateOwner(ownerInputModel);
+                return CreatedAtAction(nameof(GetOwnerById), new { ownerId = createdOwner.Id }, createdOwner);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error while saving entity: {ex.Message}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+                return StatusCode(500, new { error = "Internal server error: " + ex.Message });
+            }
+        }
 
     }
 }

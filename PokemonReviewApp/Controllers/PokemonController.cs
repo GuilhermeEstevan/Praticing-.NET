@@ -71,5 +71,30 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
             }
         }
+
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(PokemonOutputModel))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> CreatePokemon([FromBody] PokemonInputModel pokemonInputModel)
+        {
+     
+
+            try
+            {
+           
+                var createdPokemon = await _pokemonService.CreatePokemon(pokemonInputModel);
+
+                return CreatedAtAction(nameof(GetPokemonById), new { id = createdPokemon.Id }, createdPokemon);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error: " + ex.Message });
+            }
+        }
     }
 }

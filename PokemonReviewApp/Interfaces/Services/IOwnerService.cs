@@ -1,5 +1,4 @@
 ﻿using PokemonReviewApp.Dto;
-using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Interfaces.Services
 {
@@ -10,6 +9,7 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<ICollection<OwnerOutputModel>> GetOwnersByPokemon(int pokemonId);
         Task<ICollection<PokemonOutputModel>> GetPokemonsByOwner(int ownerId);
         Task<bool> OwnerExists(int ownerId);
+        Task<OwnerOutputModel> CreateOwner(OwnerInputModel ownerInputModel);
 
     }
 }

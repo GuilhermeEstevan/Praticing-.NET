@@ -9,5 +9,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<decimal> GetPokemonRating(int pokemonId);
         Task<bool> PokemonExist(int id);
         Task<PokemonOutputModel> GetPokemonByName(string name);
+        Task<PokemonOutputModel> CreatePokemon(PokemonInputModel pokemonInputModel);
     }
 }

@@ -7,7 +7,9 @@ namespace PokemonReviewApp.Helper.Validators
     {
         public CountryValidator() 
         {
-            RuleFor(x => x.Name).NotEmpty().WithMessage("Category name is required.");
+            RuleFor(country => country.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .Matches("^[a-zA-Z]+$").WithMessage("Name should contain only letters.");
         }
     }
 }

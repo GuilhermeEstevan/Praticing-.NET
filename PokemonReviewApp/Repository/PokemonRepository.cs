@@ -63,6 +63,17 @@ namespace PokemonReviewApp.Repository
             return pokemon;
         }
 
+        public async Task<Pokemon> CreatePokemon(Pokemon pokemon)
+        {
+            _context.Pokemon.Add(pokemon);
+            await _context.SaveChangesAsync();
+            return pokemon;
+        }
 
+        public async Task<bool> PokemonNameAlreadyExists(string name)
+        {
+            return await _context.Pokemon
+                                    .AnyAsync(p => p.Name.ToLower() == name.ToLower());
+        }
     }
 }
