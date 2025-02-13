@@ -174,3 +174,6 @@ C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\obj\Debug\net8.0\P
 C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\bin\Debug\net8.0\DotNetEnv.dll
 C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\bin\Debug\net8.0\Sprache.dll
 C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\bin\Debug\net8.0\FluentValidation.dll
+C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+C:\Users\guilh\source\repos\PokemonReviewApp\PokemonReviewApp\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll

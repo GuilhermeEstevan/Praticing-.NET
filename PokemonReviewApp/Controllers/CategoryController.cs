@@ -69,5 +69,32 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
             }
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryInputModel categoryInputModel)
+        {
+            if (categoryInputModel == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            try
+            {
+                var createdCategory = await _categoryService.CreateCategory(categoryInputModel);
+
+                // Retorna o status 201 com a categoria criada
+                return CreatedAtAction(nameof(GetCategoryById), new { categoryId = createdCategory.Id }, createdCategory);
+
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PokemonReviewApp.Dto;
+using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Interfaces.Services
 {
@@ -7,5 +8,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<ICollection<CategoryOutputModel>> GetCategories();
         Task<CategoryOutputModel> GetCategoryById(int id);
         Task<ICollection<PokemonOutputModel>> GetPokemonsByCategory(int categoryId);
+        Task<CategoryOutputModel> CreateCategory(CategoryInputModel categoryInputModel);
     }
 }

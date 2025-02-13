@@ -21,6 +21,22 @@
   },
   {
     "ContainingType": "PokemonReviewApp.Controllers.CategoryController",
+    "Method": "CreateCategory",
+    "RelativePath": "api/Category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "categoryInputModel",
+        "Type": "PokemonReviewApp.Dto.CategoryInputModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PokemonReviewApp.Controllers.CategoryController",
     "Method": "GetCategoryById",
     "RelativePath": "api/Category/{categoryId}",
     "HttpMethod": "GET",

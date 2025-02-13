@@ -12,7 +12,7 @@ namespace PokemonReviewApp.Helper
             CreateMap<Pokemon, PokemonInputModel>();
             CreateMap<Pokemon, PokemonOutputModel>();
             // Category
-            CreateMap<Category, CategoryInputModel>();
+            CreateMap<CategoryInputModel, Category>();
             CreateMap<Category, CategoryOutputModel>();
             // Country
             CreateMap<Country, CountryInputModel>();

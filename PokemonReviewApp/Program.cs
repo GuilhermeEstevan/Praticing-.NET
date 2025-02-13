@@ -1,7 +1,9 @@
 using DotNetEnv;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using PokemonReviewApp;
 using PokemonReviewApp.Data;
+using PokemonReviewApp.Helper.Validators;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Interfaces.Services;
 using PokemonReviewApp.Repository;
@@ -15,7 +17,13 @@ Env.Load();
 
 // Add services to the container.
 builder.Configuration.AddEnvironmentVariables();
+
 // Configurações de serviços e outros
+
+// Validators
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CategoryValidator>());
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<Seed>();

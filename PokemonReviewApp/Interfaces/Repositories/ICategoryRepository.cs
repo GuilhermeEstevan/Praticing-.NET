@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using PokemonReviewApp.Models;
+﻿using PokemonReviewApp.Models;
 
 namespace PokemonReviewApp.Interfaces.Repositories
 {
@@ -10,5 +9,8 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<Category> GetCategoryById(int id);
         Task<ICollection<Pokemon>> GetPokemonsByCategory(int categoryId);
         Task<bool> CategoryExists(int categoryId);
+        Task<Category> CreateCategory(Category category);
+        Task<bool> CategoryNameAlreadyExists(string name);
+
     }
 }
