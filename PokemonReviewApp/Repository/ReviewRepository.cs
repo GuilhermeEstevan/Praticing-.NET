@@ -43,5 +43,12 @@ namespace PokemonReviewApp.Repository
         {
             return await _context.Reviews.AnyAsync();  
         }
+
+        public async Task<Review> CreateReview(Review review)
+        {
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+            return review;
+        }
     }
 }

@@ -76,6 +76,26 @@ namespace PokemonReviewApp.Controllers
             }
         }
 
-       
+        // POST: api/review
+        [HttpPost]
+        [ProducesResponseType(201, Type = typeof(ReviewSummaryWithReviewerNameOutputModel))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> CreateReview([FromBody] ReviewInputModel reviewInputModel)
+        {
+            try
+            {
+                var createdReview = await _reviewService.CreateReview(reviewInputModel);
+                return CreatedAtAction(nameof(GetReview), new { id = createdReview.Id }, createdReview);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error: " + ex.Message });
+            }
+        }
     }
 }
