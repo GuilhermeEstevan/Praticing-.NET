@@ -19,6 +19,13 @@ namespace PokemonReviewApp.Repository
             return await _context.Countries.AnyAsync(c => c.Id == id);
         }
 
+        public async Task<Country> CreateCountry(Country country)
+        {
+            _context.Countries.Add(country);
+            await _context.SaveChangesAsync();
+            return country;
+        }
+
         public async Task<ICollection<Country>> GetCountries()
         {
             return await _context.Countries.OrderByDescending(c => c.Name).ToListAsync();
@@ -40,6 +47,12 @@ namespace PokemonReviewApp.Repository
         public async Task<ICollection<Owner>> GetOwnersByCountry(int countryId)
         {
             return await _context.Owners.Where(o => o.Country.Id == countryId).ToListAsync();
+        }
+
+        public async Task<bool> CountryNameAlreadyExists(string name)
+        {
+            return await _context.Countries
+                                    .AnyAsync(c => c.Name.ToLower() == name.ToLower());
         }
     }
 }

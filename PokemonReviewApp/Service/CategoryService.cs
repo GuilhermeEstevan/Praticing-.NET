@@ -22,7 +22,7 @@ namespace PokemonReviewApp.Service
 
         public async Task<CategoryOutputModel> CreateCategory(CategoryInputModel categoryInputModel)
         {
-            var cleanedName = categoryInputModel.Name.Trim();
+            var cleanedName = categoryInputModel.Name.Trim().ToUpper(); ;
             categoryInputModel.Name = cleanedName;
 
             var validationResult = await _categoryValidator.ValidateAsync(categoryInputModel);

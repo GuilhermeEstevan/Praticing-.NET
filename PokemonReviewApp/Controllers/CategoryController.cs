@@ -72,18 +72,19 @@ namespace PokemonReviewApp.Controllers
 
 
         [HttpPost]
+        [ProducesResponseType(201, Type = typeof(CategoryOutputModel))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryInputModel categoryInputModel)
         {
             if (categoryInputModel == null)
             {
-                return BadRequest("Invalid data.");
+                return BadRequest(new { message = "Invalid data." });
             }
 
             try
             {
                 var createdCategory = await _categoryService.CreateCategory(categoryInputModel);
-
-                // Retorna o status 201 com a categoria criada
                 return CreatedAtAction(nameof(GetCategoryById), new { categoryId = createdCategory.Id }, createdCategory);
 
             }

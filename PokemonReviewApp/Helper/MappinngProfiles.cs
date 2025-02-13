@@ -15,7 +15,7 @@ namespace PokemonReviewApp.Helper
             CreateMap<CategoryInputModel, Category>();
             CreateMap<Category, CategoryOutputModel>();
             // Country
-            CreateMap<Country, CountryInputModel>();
+            CreateMap<CountryInputModel, Country>();
             CreateMap<Country, CountryOutputModel>();
             // Owner
             CreateMap<Owner, OwnerInputModel>();

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Interfaces.Services;
+using PokemonReviewApp.Models;
+
 
 namespace PokemonReviewApp.Services
 {
@@ -9,34 +12,61 @@ namespace PokemonReviewApp.Services
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<CountryInputModel> _countryValidator;
 
-        public CountryService(ICountryRepository countryRepository, IMapper mapper)
+        public CountryService(ICountryRepository countryRepository, IMapper mapper, IValidator<CountryInputModel> countryValidator)
         {
             _countryRepository = countryRepository;
             _mapper = mapper;
+            _countryValidator = countryValidator;
         }
 
-        public async Task<ICollection<CountryOutputModel>> GetCountriesAsync()
+        public async Task<ICollection<CountryOutputModel>> GetCountries()
         {
             var countries = await _countryRepository.GetCountries();
             return _mapper.Map<List<CountryOutputModel>>(countries);
         }
 
-        public async Task<CountryOutputModel> GetCountryByIdAsync(int countryId)
+        public async Task<CountryOutputModel> GetCountryById(int countryId)
         {
             var country = await _countryRepository.GetCountry(countryId);
             return _mapper.Map<CountryOutputModel>(country);
         }
 
-        public async Task<CountryOutputModel> GetCountryByOwnerAsync(int ownerId)
+        public async Task<CountryOutputModel> GetCountryByOwner(int ownerId)
         {
             var country = await _countryRepository.GetCountryByOwner(ownerId);
             return _mapper.Map<CountryOutputModel>(country);
         }
 
-        public async Task<bool> CountryExistsAsync(int countryId)
+        public async Task<bool> CountryExists(int countryId)
         {
             return await _countryRepository.CountryExists(countryId);
+        }
+
+        public async Task<CountryOutputModel> CreateCountry(CountryInputModel countryInputModel)
+        {
+            var cleanedName = countryInputModel.Name.Trim().ToLower();
+            countryInputModel.Name = cleanedName;
+
+            var validationResult = await _countryValidator.ValidateAsync(countryInputModel);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Country data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            bool countryAlrearyExists = await _countryRepository.CountryNameAlreadyExists(countryInputModel.Name);
+            if (countryAlrearyExists)
+            {
+                throw new ArgumentException("A Country with the same name already exists.");
+            }
+            
+            var country = _mapper.Map<Country>(countryInputModel);
+            var createdCountry = await _countryRepository.CreateCountry(country);
+            return _mapper.Map<CountryOutputModel>(createdCountry);
+
+   
         }
     }
 }
