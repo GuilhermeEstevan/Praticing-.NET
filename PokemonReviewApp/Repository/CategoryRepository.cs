@@ -27,7 +27,7 @@ namespace PokemonReviewApp.Repository
 
         public async Task<ICollection<Category>> GetCategories()
         {
-            return await _context.Categories.OrderByDescending(c => c.Name).ToListAsync();
+            return await _context.Categories.OrderBy(c => c.Name).ToListAsync();
         }
 
         public async Task<Category> GetCategoryById(int id)
@@ -49,5 +49,11 @@ namespace PokemonReviewApp.Repository
                                     .AnyAsync(c => c.Name.ToLower() == name.ToLower());
         }
 
+        public async Task<Category> UpdateCategory(Category category)
+        {
+            _context.Update(category);
+            await _context.SaveChangesAsync();
+            return category;
+        }
     }
 }

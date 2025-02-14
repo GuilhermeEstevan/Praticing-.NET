@@ -64,5 +64,12 @@ namespace PokemonReviewApp.Repository
             return owner;
 
         }
+
+        public async Task<Owner> UpdateOwner(Owner owner)
+        {
+            _context.Owners.Update(owner);
+            await _context.SaveChangesAsync();
+            return owner;
+        }
     }
 }

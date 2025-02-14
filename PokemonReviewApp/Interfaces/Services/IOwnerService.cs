@@ -10,6 +10,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<ICollection<PokemonOutputModel>> GetPokemonsByOwner(int ownerId);
         Task<bool> OwnerExists(int ownerId);
         Task<OwnerOutputModel> CreateOwner(OwnerInputModel ownerInputModel);
-
+        Task<OwnerOutputModel> UpdateOwner(int id, OwnerInputModel ownerInputModel);
     }
 }

@@ -121,5 +121,27 @@ namespace PokemonReviewApp.Controllers
             }
         }
 
+        [HttpPut]
+        [ProducesResponseType(200, Type = typeof(OwnerOutputModel))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<OwnerOutputModel>> UpdateOwner([FromQuery] int id, [FromBody] OwnerInputModel ownerInputModel)
+        {
+            try
+            {
+                var updatedOwner = await _ownerService.UpdateOwner(id, ownerInputModel);
+                return Ok(updatedOwner);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
     }
 }

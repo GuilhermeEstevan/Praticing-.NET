@@ -9,5 +9,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<CategoryOutputModel> GetCategoryById(int id);
         Task<ICollection<PokemonOutputModel>> GetPokemonsByCategory(int categoryId);
         Task<CategoryOutputModel> CreateCategory(CategoryInputModel categoryInputModel);
+        Task<CategoryOutputModel> UpdateCategory(int id, CategoryInputModel categoryInputModel);
     }
 }

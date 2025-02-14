@@ -10,5 +10,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<CountryOutputModel> GetCountryByOwner(int ownerId);
         Task<bool> CountryExists(int countryId);
         Task<CountryOutputModel> CreateCountry(CountryInputModel countryInputModel);
+        Task<CountryOutputModel> UpdateCountry(int id, CountryInputModel countryInputModel);
     }
 }

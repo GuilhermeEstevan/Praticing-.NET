@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using FluentValidation;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces.Repositories;
@@ -61,9 +62,9 @@ namespace PokemonReviewApp.Services
 
         public async Task<OwnerOutputModel> CreateOwner(OwnerInputModel ownerInputModel)
         {
-            var cleanedFirstName = (ownerInputModel.FirstName.Trim().ToLower());
-            var cleanedLastName = Utils.Utils.RemoveAccents(ownerInputModel.LastName.Trim().ToLower());
-            var cleanedGymName = Utils.Utils.RemoveAccents(ownerInputModel.Gym.Trim().ToLower());
+            var cleanedFirstName = Utils.Utils.RemoveAccents(ownerInputModel.FirstName.Trim());
+            var cleanedLastName = Utils.Utils.RemoveAccents(ownerInputModel.LastName.Trim());
+            var cleanedGymName = Utils.Utils.RemoveAccents(ownerInputModel.Gym.Trim());
             ownerInputModel.FirstName = cleanedFirstName;
             ownerInputModel.LastName = cleanedLastName;
             ownerInputModel.Gym = cleanedGymName;
@@ -87,6 +88,47 @@ namespace PokemonReviewApp.Services
             var createdOwner =await _ownerRepository.CreateOwner(owner);
             return _mapper.Map<OwnerOutputModel>(createdOwner);
 
+        }
+
+        public async Task<OwnerOutputModel> UpdateOwner(int id, OwnerInputModel ownerInputModel)
+        {
+        
+            var existingOwner = await _ownerRepository.GetOwner(id);
+            if (existingOwner == null)
+            {
+                throw new ArgumentException("Owner not found.");
+            }
+
+            // Tratamento de nome
+            ownerInputModel.FirstName = ownerInputModel.FirstName.Trim();
+            ownerInputModel.LastName = ownerInputModel.LastName.Trim();
+            ownerInputModel.Gym = ownerInputModel.Gym.Trim();
+
+            existingOwner.FirstName = Utils.Utils.RemoveAccents(ownerInputModel.FirstName);
+            existingOwner.LastName = Utils.Utils.RemoveAccents(ownerInputModel.LastName);
+            existingOwner.Gym = Utils.Utils.RemoveAccents(ownerInputModel.Gym);
+
+            var validationResult = await _ownerValidator.ValidateAsync(ownerInputModel);
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Owner data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            // Se o país foi alterado, verificar se ele existe
+            if (ownerInputModel.CountryId != existingOwner.Country.Id)
+            {
+                var countryExists = await _countryRepository.CountryExists(ownerInputModel.CountryId);
+                if (!countryExists)
+                {
+                    throw new ArgumentException("The specified country does not exist.");
+                }
+
+                var newCountry = await _countryRepository.GetCountry(ownerInputModel.CountryId);
+                existingOwner.Country = newCountry;
+            }
+
+            var updatedOwner = await _ownerRepository.UpdateOwner(existingOwner);
+            return _mapper.Map<OwnerOutputModel>(updatedOwner);
         }
     }
 }

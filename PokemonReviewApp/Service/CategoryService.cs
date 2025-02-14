@@ -22,8 +22,7 @@ namespace PokemonReviewApp.Service
 
         public async Task<CategoryOutputModel> CreateCategory(CategoryInputModel categoryInputModel)
         {
-            var cleanedName = categoryInputModel.Name.Trim().ToUpper(); ;
-            categoryInputModel.Name = cleanedName;
+            categoryInputModel.Name = categoryInputModel.Name.Trim().ToUpper();
 
             var validationResult = await _categoryValidator.ValidateAsync(categoryInputModel);
 
@@ -59,6 +58,34 @@ namespace PokemonReviewApp.Service
         {
             var pokemons = await _categoryRepository.GetPokemonsByCategory(categoryId);
             return _mapper.Map<ICollection<PokemonOutputModel>>(pokemons);
+        }
+
+        public async Task<CategoryOutputModel> UpdateCategory(int id,CategoryInputModel categoryInputModel)
+        {
+            var existingCategory = await _categoryRepository.GetCategoryById(id);
+            if (existingCategory == null)
+            {
+                throw new ArgumentException("Category not found.");
+            }
+
+            categoryInputModel.Name = categoryInputModel.Name.Trim().ToUpper();
+            
+            var validationResult = await _categoryValidator.ValidateAsync(categoryInputModel);
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Category data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            bool categoryAlreadyExists = await _categoryRepository.CategoryNameAlreadyExists(categoryInputModel.Name);
+            if (categoryAlreadyExists && existingCategory.Name != categoryInputModel.Name)
+            {
+                throw new ArgumentException("A category with the same name already exists.");
+            }
+
+            existingCategory.Name = categoryInputModel.Name;
+
+            var updatedCategory = await _categoryRepository.UpdateCategory(existingCategory);
+            return _mapper.Map<CategoryOutputModel>(updatedCategory);
         }
     }
 }

@@ -54,5 +54,12 @@ namespace PokemonReviewApp.Repository
             return await _context.Countries
                                     .AnyAsync(c => c.Name.ToLower() == name.ToLower());
         }
+
+        public async Task<Country> UpdateCountry(Country country)
+        {
+            _context.Update(country);
+            await _context.SaveChangesAsync();
+            return country;
+        }
     }
 }

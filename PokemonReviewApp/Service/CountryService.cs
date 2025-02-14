@@ -1,9 +1,12 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using FluentValidation;
 using PokemonReviewApp.Dto;
+using PokemonReviewApp.Helper.Validators;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Interfaces.Services;
 using PokemonReviewApp.Models;
+using PokemonReviewApp.Repository;
 
 
 namespace PokemonReviewApp.Services
@@ -46,8 +49,8 @@ namespace PokemonReviewApp.Services
 
         public async Task<CountryOutputModel> CreateCountry(CountryInputModel countryInputModel)
         {
-            var cleanedName = countryInputModel.Name.Trim().ToLower();
-            countryInputModel.Name = cleanedName;
+
+            countryInputModel.Name = Regex.Replace(countryInputModel.Name.Trim(), @"\s+", " ").ToLower();
 
             var validationResult = await _countryValidator.ValidateAsync(countryInputModel);
 
@@ -67,6 +70,34 @@ namespace PokemonReviewApp.Services
             return _mapper.Map<CountryOutputModel>(createdCountry);
 
    
+        }
+
+        public async Task<CountryOutputModel> UpdateCountry(int id, CountryInputModel countryInputModel)
+        {
+
+            var existingCountry = await _countryRepository.GetCountry(id);
+            if (existingCountry == null)
+            {
+                throw new ArgumentException("Country not found.");
+            }
+
+            countryInputModel.Name = Regex.Replace(countryInputModel.Name.Trim(), @"\s+", " ").ToLower();
+
+            var validationResult = await _countryValidator.ValidateAsync(countryInputModel);
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Country data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            bool categoryAlreadyExists = await _countryRepository.CountryNameAlreadyExists(countryInputModel.Name);
+            if (categoryAlreadyExists && countryInputModel.Name != existingCountry.Name)
+            {
+                throw new ArgumentException("A Country with the same name already exists.");
+            }
+            existingCountry.Name = countryInputModel.Name;
+
+            var updatedCategory = await _countryRepository.UpdateCountry(existingCountry);
+            return _mapper.Map<CountryOutputModel>(updatedCategory);
         }
     }
 }

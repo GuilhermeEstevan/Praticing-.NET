@@ -97,5 +97,29 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
+
+        // PUT api/category?id={id}
+        [HttpPut]
+        [ProducesResponseType(200, Type = typeof(CategoryOutputModel))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<CategoryOutputModel>> UpdateCategory([FromQuery] int id, [FromBody] CategoryInputModel categoryInputModel)
+        {
+            try
+            { 
+                var updatedCategory = await _categoryService.UpdateCategory(id,categoryInputModel);
+
+                return Ok(updatedCategory); 
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
