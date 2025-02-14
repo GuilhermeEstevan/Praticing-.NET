@@ -12,5 +12,6 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<Reviewer> CreateReviewer(Reviewer reviewer);
         Task<bool> ReviewerNameAlreadyExists(string firstName, string lastName);
         Task<Reviewer> UpdateReviewer(Reviewer reviewer);
+        Task<bool> DeleteReviewer(int reviewerId);
     }
 }

@@ -123,5 +123,36 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(204)] 
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteCategory(int categoryId)
+        {
+            try
+            {
+                var deleted = await _categoryService.DeleteCategory(categoryId);
+                if (!deleted)
+                {
+                    return NotFound(new { error = "Category not found." });
+                }
+
+                return NoContent(); 
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
+            }
+        }
     }
 }

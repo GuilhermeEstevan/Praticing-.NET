@@ -124,5 +124,31 @@ namespace PokemonReviewApp.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpDelete("{reviewerId}")]
+        [ProducesResponseType(204)] 
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteReviewer(int reviewerId)
+        {
+            try
+            {
+                var deleted = await _reviewerService.DeleteReviewer(reviewerId);
+                if (!deleted)
+                {
+                    return NotFound(new { error = "Reviewer not found." });
+                }
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
+            }
+        }
     }
 }

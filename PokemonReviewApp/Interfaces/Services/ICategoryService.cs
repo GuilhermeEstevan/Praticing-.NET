@@ -10,5 +10,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<ICollection<PokemonOutputModel>> GetPokemonsByCategory(int categoryId);
         Task<CategoryOutputModel> CreateCategory(CategoryInputModel categoryInputModel);
         Task<CategoryOutputModel> UpdateCategory(int id, CategoryInputModel categoryInputModel);
+        Task<bool> DeleteCategory(int categoryId);
     }
 }

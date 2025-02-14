@@ -11,5 +11,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<bool> ReviewExists(int pokemonId);
         Task<ReviewSummaryWithReviewerNameOutputModel> CreateReview(ReviewInputModel reviewInputModel);
         Task<ReviewOutputModel> UpdateReview(int id, ReviewUpdateModel reviewUpdateModel);
+        Task<bool> DeleteReview(int reviewId);
     }
 }

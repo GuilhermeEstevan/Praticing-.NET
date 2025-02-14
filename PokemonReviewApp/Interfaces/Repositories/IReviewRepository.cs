@@ -10,5 +10,6 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<bool> ReviewExists(int pokemonId);
         Task<Review> CreateReview(Review review);
         Task<Review> UpdateReview(Review review);
+        Task<bool> DeleteReview(int reviewId);
     }
 }

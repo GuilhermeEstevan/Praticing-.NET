@@ -62,5 +62,24 @@ namespace PokemonReviewApp.Repository
                                  .Where(c => categoryIds.Contains(c.Id))
                                  .ToListAsync();
         }
+
+        public async Task<bool> HasPokemons(int categoryId)
+        {
+            return await _context.PokemonCategories.AnyAsync(pc => pc.CategoryId == categoryId);
+        }
+
+        public async Task<bool> DeleteCategory(int categoryId)
+        {
+            var category = await _context.Categories.FindAsync(categoryId);
+
+            if (category == null)
+            {
+                return false; 
+            }
+
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

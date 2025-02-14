@@ -118,5 +118,16 @@ namespace PokemonReviewApp.Service
             return _mapper.Map<ReviewerOutputModel>(updatedReviewer);
         }
 
+        public async Task<bool> DeleteReviewer(int reviewerId)
+        {
+            var reviewerExists = await _reviewerRepository.ReviewerExists(reviewerId);
+            if (!reviewerExists)
+            {
+                throw new KeyNotFoundException($"Reviewer with ID {reviewerId} not found.");
+            }
+
+            return await _reviewerRepository.DeleteReviewer(reviewerId);
+        }
+
     }
 }

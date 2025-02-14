@@ -13,6 +13,8 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<bool> CategoryNameAlreadyExists(string name);
         Task<Category> UpdateCategory(Category category);
         Task<ICollection<Category>> GetCategoriesByIds(List<int> categoryIds);
+        Task<bool> HasPokemons(int categoryId);
+        Task<bool> DeleteCategory(int categoryId);
 
     }
 }

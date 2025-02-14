@@ -70,5 +70,23 @@ namespace PokemonReviewApp.Repository
             await _context.SaveChangesAsync();
             return reviewer;
         }
+
+        public async Task<bool> DeleteReviewer(int reviewerId)
+        {
+            var reviewer = await _context.Reviewers
+                .Include(r => r.Reviews) // Inclui as reviews associadas
+                .FirstOrDefaultAsync(r => r.Id == reviewerId);
+
+            if (reviewer == null)
+            {
+                return false;
+            }
+
+            _context.Reviews.RemoveRange(reviewer.Reviews); // Remove todas as reviews associadas
+            _context.Reviewers.Remove(reviewer);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

@@ -98,5 +98,22 @@ namespace PokemonReviewApp.Service
             var updatedCategory = await _categoryRepository.UpdateCategory(existingCategory);
             return _mapper.Map<CategoryOutputModel>(updatedCategory);
         }
+
+        public async Task<bool> DeleteCategory(int categoryId)
+        {
+            var categoryExists = await _categoryRepository.CategoryExists(categoryId);
+            if (!categoryExists)
+            {
+                throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
+            }
+
+            var hasPokemons = await _categoryRepository.HasPokemons(categoryId);
+            if (hasPokemons)
+            {
+                throw new InvalidOperationException("Cannot delete a category that has associated Pokémon.");
+            }
+
+            return await _categoryRepository.DeleteCategory(categoryId);
+        }
     }
 }

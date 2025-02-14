@@ -129,5 +129,16 @@ namespace PokemonReviewApp.Service
             var updatedReview = await _reviewRepository.UpdateReview(existingReview);
             return _mapper.Map<ReviewOutputModel>(updatedReview);
         }
+
+        public async Task<bool> DeleteReview(int reviewId)
+        {
+            var reviewExists = await _reviewRepository.ReviewExists(reviewId);
+            if (!reviewExists)
+            {
+                throw new KeyNotFoundException($"Review with ID {reviewId} not found.");
+            }
+
+            return await _reviewRepository.DeleteReview(reviewId);
+        }
     }
 }
