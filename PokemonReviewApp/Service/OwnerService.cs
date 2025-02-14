@@ -39,13 +39,23 @@ namespace PokemonReviewApp.Services
         public async Task<OwnerOutputModel> GetOwnerById(int ownerId)
         {
             var owner = await _ownerRepository.GetOwner(ownerId);
-            if (owner == null) return null;
+            if (owner == null)
+            {
+                throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
+            }
+
             return _mapper.Map<OwnerOutputModel>(owner);
         }
 
         public async Task<ICollection<OwnerOutputModel>> GetOwnersByPokemon(int pokemonId)
         {
             var owners = await _ownerRepository.GetOwnersByPokemon(pokemonId);
+
+            if (owners == null || !owners.Any())
+            {
+                throw new KeyNotFoundException($"No owners found for Pokemon with ID {pokemonId}.");
+            }
+
             return _mapper.Map<ICollection<OwnerOutputModel>>(owners);
         }
 
@@ -57,6 +67,12 @@ namespace PokemonReviewApp.Services
         public async Task<ICollection<PokemonOutputModel>> GetPokemonsByOwner(int ownerId)
         {
             var pokemons = await _ownerRepository.GetPokemonsByOwner(ownerId);
+
+            if (pokemons == null || !pokemons.Any())
+            {
+                throw new KeyNotFoundException($"No pokemons found for Owner with ID {ownerId}.");
+            }
+
             return _mapper.Map<List<PokemonOutputModel>>(pokemons);
         }
 
@@ -129,6 +145,17 @@ namespace PokemonReviewApp.Services
 
             var updatedOwner = await _ownerRepository.UpdateOwner(existingOwner);
             return _mapper.Map<OwnerOutputModel>(updatedOwner);
+        }
+
+        public async Task<bool> DeleteOwner(int ownerId)
+        {
+            var ownerExists = await _ownerRepository.OwnerExists(ownerId);
+            if (!ownerExists)
+            {
+                throw new KeyNotFoundException($"Owner with ID {ownerId} not found.");
+            }
+
+            return await _ownerRepository.DeleteOwner(ownerId);
         }
     }
 }

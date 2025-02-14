@@ -42,13 +42,24 @@ namespace PokemonReviewApp.Service
         public async Task<ReviewOutputModel> GetReview(int id)
         {
             var review = await _reviewRepository.GetReview(id);
-            if (review == null) return null; 
+
+            if (review == null)
+            {
+                throw new KeyNotFoundException($"Review with ID {id} not found.");
+            }
+
             return _mapper.Map<ReviewOutputModel>(review);
         }
 
         public async Task<ICollection<ReviewOutputModel>> GetReviewsByPokemon(int pokemonId)
         {
             var reviews = await _reviewRepository.GetReviewsByPokemon(pokemonId);
+
+            if (reviews == null || !reviews.Any())
+            {
+                throw new KeyNotFoundException($"No reviews found for Pokemon with ID {pokemonId}.");
+            }
+
             return _mapper.Map<ICollection<ReviewOutputModel>>(reviews);
         }
 

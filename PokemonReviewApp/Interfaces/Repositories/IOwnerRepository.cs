@@ -11,5 +11,6 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<bool> OwnerExists(int ownerId);
         Task<Owner> CreateOwner(Owner owner);
         Task<Owner> UpdateOwner(Owner owner);
+        Task<bool> DeleteOwner(int ownerId);
     }
 }

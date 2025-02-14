@@ -42,15 +42,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var review = await _reviewService.GetReview(id);
-                if (review == null)
-                {
-                    return NotFound($"Review with id {id} not found.");
-                }
                 return Ok(review);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 
@@ -64,15 +64,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var reviews = await _reviewService.GetReviewsByPokemon(pokemonId);
-                if (reviews == null || reviews.Count == 0)
-                {
-                    return NotFound($"No reviews found for Pokemon with id {pokemonId}");
-                }
                 return Ok(reviews);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 

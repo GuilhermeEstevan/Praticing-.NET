@@ -12,5 +12,7 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<Country> CreateCountry(Country country);
         Task<bool> CountryNameAlreadyExists(string name);
         Task<Country> UpdateCountry(Country country);
+        Task<bool> DeleteCountry(int countryId);
+        Task<bool> HasOwners(int countryId);
     }
 }

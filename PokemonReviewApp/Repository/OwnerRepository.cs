@@ -71,5 +71,24 @@ namespace PokemonReviewApp.Repository
             await _context.SaveChangesAsync();
             return owner;
         }
+
+        public async Task<bool> DeleteOwner(int ownerId)
+        {
+            var owner = await _context.Owners
+                .Include(o => o.PokemonOwners)
+                .FirstOrDefaultAsync(o => o.Id == ownerId);
+
+            if (owner == null)
+            {
+                return false; 
+            }
+
+            // Remove todas as relações do Owner com Pokémons antes de deletá-lo
+            _context.PokemonOwners.RemoveRange(owner.PokemonOwners);
+
+            _context.Owners.Remove(owner);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

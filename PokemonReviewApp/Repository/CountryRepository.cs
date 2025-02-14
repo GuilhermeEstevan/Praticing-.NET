@@ -33,7 +33,7 @@ namespace PokemonReviewApp.Repository
 
         public async Task<Country> GetCountry(int id)
         {
-            return await _context.Countries.Where(c => c.Id == id).FirstAsync();
+            return await _context.Countries.Where(c => c.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task<Country> GetCountryByOwner(int ownerId)
@@ -60,6 +60,25 @@ namespace PokemonReviewApp.Repository
             _context.Update(country);
             await _context.SaveChangesAsync();
             return country;
+        }
+
+        public async Task<bool> HasOwners(int countryId)
+        {
+            return await _context.Owners.AnyAsync(o => o.Country.Id == countryId);
+        }
+
+        public async Task<bool> DeleteCountry(int countryId)
+        {
+            var country = await _context.Countries.FindAsync(countryId);
+
+            if (country == null)
+            {
+                return false;
+            }
+
+            _context.Countries.Remove(country);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

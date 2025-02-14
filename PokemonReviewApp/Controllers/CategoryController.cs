@@ -40,14 +40,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var category = await _categoryService.GetCategoryById(categoryId);
-                if (category == null)
-                    return NotFound($"Category with ID {categoryId} not found.");
-
                 return Ok(category);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
@@ -59,14 +60,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var pokemons = await _categoryService.GetPokemonsByCategory(categoryId);
-                if (pokemons == null || !pokemons.Any())
-                    return NotFound($"No Pokémon found for Category with ID {categoryId}.");
-
                 return Ok(pokemons);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 

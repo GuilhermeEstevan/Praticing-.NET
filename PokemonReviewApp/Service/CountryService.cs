@@ -32,13 +32,24 @@ namespace PokemonReviewApp.Services
         public async Task<CountryOutputModel> GetCountryById(int countryId)
         {
             var country = await _countryRepository.GetCountry(countryId);
+            if (country == null)
+            {
+                throw new KeyNotFoundException($"Country with ID {countryId} not found.");
+            }
+
             return _mapper.Map<CountryOutputModel>(country);
         }
 
         public async Task<CountryOutputModel> GetCountryByOwner(int ownerId)
         {
             var country = await _countryRepository.GetCountryByOwner(ownerId);
-            return _mapper.Map<CountryOutputModel>(country);
+
+            if (country == null)
+            {
+                throw new KeyNotFoundException($"Country for Owner with ID {ownerId} not found.");
+            }
+
+            return _mapper.Map<CountryOutputModel>(country); ;
         }
 
         public async Task<bool> CountryExists(int countryId)
@@ -97,6 +108,23 @@ namespace PokemonReviewApp.Services
 
             var updatedCategory = await _countryRepository.UpdateCountry(existingCountry);
             return _mapper.Map<CountryOutputModel>(updatedCategory);
+        }
+
+        public async Task<bool> DeleteCountry(int countryId)
+        {
+            var countryExists = await _countryRepository.CountryExists(countryId);
+            if (!countryExists)
+            {
+                throw new KeyNotFoundException($"Country with ID {countryId} not found.");
+            }
+
+            var hasOwners = await _countryRepository.HasOwners(countryId);
+            if (hasOwners)
+            {
+                throw new InvalidOperationException("Cannot delete a country that has associated owners.");
+            }
+
+            return await _countryRepository.DeleteCountry(countryId);
         }
     }
 }

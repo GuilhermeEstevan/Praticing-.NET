@@ -41,20 +41,18 @@ namespace PokemonReviewApp.Controllers
         {
             try
             {
-                var countryExists = await _countryService.CountryExists(countryId);
-                if (!countryExists)
-                {
-                    return NotFound($"Country with ID {countryId} not found.");
-                }
-
                 var country = await _countryService.GetCountryById(countryId);
                 return Ok(country);
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
-        }
+            }
 
         [HttpGet("pokemonOwner/{ownerId}")]
         [ProducesResponseType(200, Type = typeof(CountryOutputModel))]
@@ -64,15 +62,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var country = await _countryService.GetCountryByOwner(ownerId);
-                if (country == null)
-                {
-                    return NotFound($"Country for Owner with ID {ownerId} not found.");
-                }
                 return Ok(country);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
@@ -124,6 +122,37 @@ namespace PokemonReviewApp.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpDelete("{countryId}")]
+        [ProducesResponseType(204)] // No Content
+        [ProducesResponseType(404)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteCountry(int countryId)
+        {
+            try
+            {
+                var deleted = await _countryService.DeleteCountry(countryId);
+                if (!deleted)
+                {
+                    return NotFound(new { error = "Country not found." });
+                }
+
+                return NoContent(); // Retorna 204 - No Content
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
     }

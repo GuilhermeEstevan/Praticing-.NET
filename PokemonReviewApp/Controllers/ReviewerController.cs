@@ -43,16 +43,17 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var reviewer = await _reviewerService.GetReviewerById(reviewerId);
-                if (reviewer == null)
-                {
-                    return NotFound("Reviewer not found.");
-                }
                 return Ok(reviewer);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
+
         }
 
         // GET: api/Reviewer/1/reviews
@@ -65,15 +66,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var reviews = await _reviewerService.GetReviewsByReviewer(reviewerId);
-                if (reviews == null || !reviews.Any())
-                {
-                    return NotFound("No reviews found for this reviewer.");
-                }
                 return Ok(reviews);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 

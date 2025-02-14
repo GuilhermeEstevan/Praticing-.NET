@@ -42,15 +42,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var owner = await _ownerService.GetOwnerById(ownerId);
-                if (owner == null)
-                {
-                    return NotFound($"Owner with ID {ownerId} not found.");
-                }
                 return Ok(owner);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
@@ -66,9 +66,13 @@ namespace PokemonReviewApp.Controllers
                 var pokemons = await _ownerService.GetPokemonsByOwner(ownerId);
                 return Ok(pokemons);
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
@@ -81,15 +85,15 @@ namespace PokemonReviewApp.Controllers
             try
             {
                 var owners = await _ownerService.GetOwnersByPokemon(pokemonId);
-                if (owners == null || !owners.Any())
-                {
-                    return NotFound($"No owners found for Pokemon with ID {pokemonId}");
-                }
                 return Ok(owners);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 
@@ -143,5 +147,31 @@ namespace PokemonReviewApp.Controllers
             }
         }
 
+
+        [HttpDelete("{ownerId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteOwner(int ownerId)
+        {
+            try
+            {
+                var deleted = await _ownerService.DeleteOwner(ownerId);
+                if (!deleted)
+                {
+                    return NotFound(new { error = "Owner not found." });
+                }
+
+                return NoContent(); 
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
+            }
+        }
     }
 }

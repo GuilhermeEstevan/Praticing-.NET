@@ -51,12 +51,23 @@ namespace PokemonReviewApp.Service
         public async Task<CategoryOutputModel> GetCategoryById(int id)
         {
             var category = await _categoryRepository.GetCategoryById(id);
+            if (category == null)
+            {
+                throw new KeyNotFoundException($"Category with ID {id} not found.");
+            }
+
             return _mapper.Map<CategoryOutputModel>(category);
         }
 
         public async Task<ICollection<PokemonOutputModel>> GetPokemonsByCategory(int categoryId)
         {
             var pokemons = await _categoryRepository.GetPokemonsByCategory(categoryId);
+
+            if (pokemons == null || !pokemons.Any())
+            {
+                throw new KeyNotFoundException($"No Pokémon found for Category with ID {categoryId}.");
+            }
+
             return _mapper.Map<ICollection<PokemonOutputModel>>(pokemons);
         }
 

@@ -43,7 +43,10 @@ namespace PokemonReviewApp.Service
         {
             var reviewer = await _reviewerRepository.GetReviewerById(reviewerId);
             if (reviewer == null)
-                return null;
+            {
+                throw new KeyNotFoundException($"Reviewer with ID {reviewerId} not found.");
+            }
+
             return _mapper.Map<ReviewerOutputModel>(reviewer);
         }
 
@@ -51,6 +54,12 @@ namespace PokemonReviewApp.Service
             GetReviewsByReviewer(int reviewerId)
         {
             var reviews = await _reviewerRepository.GetReviewsByReviewer(reviewerId);
+
+            if (reviews == null || !reviews.Any())
+            {
+                throw new KeyNotFoundException($"No reviews found for Reviewer with ID {reviewerId}.");
+            }
+
             return _mapper.Map<ICollection<ReviewSummaryWithReviewerNameOutputModel>>(reviews);
         }
 
