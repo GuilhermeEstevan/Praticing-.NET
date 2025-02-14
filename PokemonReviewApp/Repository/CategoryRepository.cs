@@ -55,5 +55,12 @@ namespace PokemonReviewApp.Repository
             await _context.SaveChangesAsync();
             return category;
         }
+
+        public async Task<ICollection<Category>> GetCategoriesByIds(List<int> categoryIds)
+        {
+            return await _context.Categories
+                                 .Where(c => categoryIds.Contains(c.Id))
+                                 .ToListAsync();
+        }
     }
 }

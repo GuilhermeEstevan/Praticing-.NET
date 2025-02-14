@@ -2,11 +2,10 @@
 using AutoMapper;
 using FluentValidation;
 using PokemonReviewApp.Dto;
-using PokemonReviewApp.Helper.Validators;
 using PokemonReviewApp.Interfaces.Repositories;
 using PokemonReviewApp.Interfaces.Services;
 using PokemonReviewApp.Models;
-using PokemonReviewApp.Repository;
+
 
 
 namespace PokemonReviewApp.Services

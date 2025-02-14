@@ -18,4 +18,21 @@ namespace PokemonReviewApp.Helper.Validators
             RuleFor(x => x.PokemonId).GreaterThan(0).WithMessage("PokemonId must be a valid ID.");
         }
     }
+
+    public class ReviewUpdateValidator : AbstractValidator<ReviewUpdateModel>
+    {
+        public ReviewUpdateValidator()
+        {
+            RuleFor(review => review.Title)
+                .NotEmpty().WithMessage("Title is required.")
+                .MaximumLength(200).WithMessage("Title cannot be longer than 50 characters.");
+
+            RuleFor(review => review.Text)
+                .NotEmpty().WithMessage("Text is required.")
+                .MaximumLength(500).WithMessage("Text cannot be longer than 500 characters.");
+
+            RuleFor(review => review.Rating)
+                .InclusiveBetween(1, 5).WithMessage("Rating must be between 1 and 5.");
+        }
+    }
 }

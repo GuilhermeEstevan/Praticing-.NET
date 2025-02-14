@@ -9,5 +9,6 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<ICollection<Review>> GetReviewsByPokemon(int pokemonId);
         Task<bool> ReviewExists(int pokemonId);
         Task<Review> CreateReview(Review review);
+        Task<Review> UpdateReview(Review review);
     }
 }

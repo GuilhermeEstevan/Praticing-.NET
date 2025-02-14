@@ -10,7 +10,11 @@ namespace PokemonReviewApp.Helper
         {
             // Pokemon
             CreateMap<PokemonInputModel, Pokemon>();
-            CreateMap<Pokemon, PokemonOutputModel>();
+            CreateMap<Pokemon, PokemonOutputModel>()
+               .ForMember(dest => dest.Categories, opt => opt.MapFrom(src =>
+                   src.PokemonCategories.Select(pc => new CategoryOutputModel { Id = pc.Category.Id, Name = pc.Category.Name })
+               ));
+            CreateMap<PokemonUpdateModel, Pokemon>();
             // Category
             CreateMap<CategoryInputModel, Category>();
             CreateMap<Category, CategoryOutputModel>();

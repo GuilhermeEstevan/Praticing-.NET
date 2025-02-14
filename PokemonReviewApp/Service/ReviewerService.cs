@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using FluentValidation;
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces.Repositories;
@@ -13,20 +14,23 @@ namespace PokemonReviewApp.Service
 
         private readonly IReviewerRepository _reviewerRepository;
         private readonly IMapper _mapper;
-        private readonly IValidator<ReviewerInputModel> _reviewerValidator;
+        private readonly IValidator<ReviewerInputModel> _reviewerInputValidator;
+        private readonly IValidator<ReviewerUpdateModel> _reviewerUpdateValidator;
 
 
         public ReviewerService
         (
             IReviewerRepository reviewerRepository,
             IMapper mapper,
-            IValidator<ReviewerInputModel> reviewerValidator)
+            IValidator<ReviewerInputModel> reviewerInputValidator,
+            IValidator<ReviewerUpdateModel> reviewerUpdateValidator
+            )
         {
 
             this._reviewerRepository = reviewerRepository;
             this._mapper = mapper;
-            this._reviewerValidator = reviewerValidator;
-       
+            this._reviewerInputValidator = reviewerInputValidator;
+            this._reviewerUpdateValidator = reviewerUpdateValidator;
         }
 
         public async Task<ICollection<ReviewerOutputModel>> GetReviewers()
@@ -61,7 +65,7 @@ namespace PokemonReviewApp.Service
             reviewerInputModel.FirstName = Utils.Utils.RemoveAccents(reviewerInputModel.FirstName.Trim());
             reviewerInputModel.LastName = Utils.Utils.RemoveAccents(reviewerInputModel.LastName.Trim());
 
-            var validationResult = await _reviewerValidator.ValidateAsync(reviewerInputModel);
+            var validationResult = await _reviewerInputValidator.ValidateAsync(reviewerInputModel);
 
             if (!validationResult.IsValid)
             {
@@ -78,5 +82,32 @@ namespace PokemonReviewApp.Service
             var createdReviewer = await _reviewerRepository.CreateReviewer(reviewer);
             return _mapper.Map<ReviewerOutputModel>(createdReviewer);
         }
+
+        public async Task<ReviewerOutputModel> UpdateReviewer(int id, ReviewerUpdateModel reviewerUpdateModel)
+        {
+            var existingReviewer = await _reviewerRepository.GetReviewerById(id);
+            if (existingReviewer == null)
+            {
+                throw new ArgumentException("Reviewer not found.");
+            }
+
+            // Normaliza os valores
+            reviewerUpdateModel.FirstName = Regex.Replace(reviewerUpdateModel.FirstName.Trim(), @"\s+", " ").ToLower();
+            reviewerUpdateModel.LastName = Regex.Replace(reviewerUpdateModel.LastName.Trim(), @"\s+", " ").ToLower();
+
+            // Validação dos dados
+            var validationResult = await _reviewerUpdateValidator.ValidateAsync(reviewerUpdateModel);
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException("Reviewer data is not valid: " + string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+            }
+
+            existingReviewer.FirstName = reviewerUpdateModel.FirstName;
+            existingReviewer.LastName = reviewerUpdateModel.LastName;
+
+            var updatedReviewer = await _reviewerRepository.UpdateReviewer(existingReviewer);
+            return _mapper.Map<ReviewerOutputModel>(updatedReviewer);
+        }
+
     }
 }

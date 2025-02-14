@@ -40,7 +40,13 @@
         public string Text { get; set; }
         public int Rating { get; set; }
         public ReviewerNameOutputModel Reviewer { get; set; }
-
         public PokemonOutputModel Pokemon { get; set; }
+    }
+
+    public class ReviewUpdateModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+        public int Rating { get; set; }
     }
 }

@@ -18,4 +18,17 @@ namespace PokemonReviewApp.Helper.Validators
 
         }
     }
+    public class ReviewerUpdateValidator : AbstractValidator<ReviewerUpdateModel>
+    {
+        public ReviewerUpdateValidator()
+        {
+            RuleFor(reviewer => reviewer.FirstName)
+                .NotEmpty().WithMessage("First Name is required.")
+                .Matches("^[a-zA-Z ]+$").WithMessage("First Name should contain only letters and spaces.");
+
+            RuleFor(reviewer => reviewer.LastName)
+                .NotEmpty().WithMessage("Last Name is required.")
+                .Matches("^[a-zA-Z ]+$").WithMessage("Last Name should contain only letters and spaces.");
+        }
+    }
 }

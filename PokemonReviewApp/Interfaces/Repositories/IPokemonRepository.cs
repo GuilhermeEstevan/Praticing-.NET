@@ -11,7 +11,7 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<bool> PokemonExist(int id);
         Task<bool> PokemonNameAlreadyExists(string name);
         Task<Pokemon> CreatePokemon(Pokemon pokemon);
-
+        Task<Pokemon> UpdatePokemon(Pokemon pokemon);
 
     }
 }

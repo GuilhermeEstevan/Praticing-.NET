@@ -25,6 +25,8 @@ namespace PokemonReviewApp.Repository
         {
             var pokemon = await _context.Pokemon
                                          .Where(p => p.Id == id)
+                                         .Include(p => p.PokemonCategories)
+                                         .ThenInclude(pc => pc.Category)
                                          .FirstOrDefaultAsync();
             if (pokemon == null)
             {
@@ -74,6 +76,13 @@ namespace PokemonReviewApp.Repository
         {
             return await _context.Pokemon
                                     .AnyAsync(p => p.Name.ToLower() == name.ToLower());
+        }
+
+        public async Task<Pokemon> UpdatePokemon(Pokemon pokemon)
+        {
+            _context.Pokemon.Update(pokemon);
+            await _context.SaveChangesAsync();
+            return pokemon;
         }
     }
 }

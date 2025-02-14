@@ -23,4 +23,10 @@ namespace PokemonReviewApp.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
+
+    public class ReviewerUpdateModel
+    {
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+    }
 }

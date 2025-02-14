@@ -63,5 +63,12 @@ namespace PokemonReviewApp.Repository
             // Se o reviewer for encontrado, retorna true, caso contrário, retorna false
             return reviewer != null;
         }
+
+        public async Task<Reviewer> UpdateReviewer(Reviewer reviewer)
+        {
+            _context.Update(reviewer);
+            await _context.SaveChangesAsync();
+            return reviewer;
+        }
     }
 }

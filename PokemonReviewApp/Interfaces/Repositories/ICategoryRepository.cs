@@ -12,6 +12,7 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<Category> CreateCategory(Category category);
         Task<bool> CategoryNameAlreadyExists(string name);
         Task<Category> UpdateCategory(Category category);
+        Task<ICollection<Category>> GetCategoriesByIds(List<int> categoryIds);
 
     }
 }

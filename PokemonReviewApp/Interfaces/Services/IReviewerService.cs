@@ -9,5 +9,6 @@ namespace PokemonReviewApp.Interfaces.Services
         Task<ICollection<ReviewSummaryWithReviewerNameOutputModel>> GetReviewsByReviewer(int reviewerId);
         Task<bool> ReviewerExists(int reviewerId);
         Task<ReviewerOutputModel> CreateReviewer(ReviewerInputModel reviewerInputModel);
+        Task<ReviewerOutputModel> UpdateReviewer(int id, ReviewerUpdateModel reviewerUpdateModel);
     }
 }

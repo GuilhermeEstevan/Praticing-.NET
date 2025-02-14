@@ -103,5 +103,25 @@ namespace PokemonReviewApp.Controllers
         }
 
 
+        [HttpPut]
+        [ProducesResponseType(200, Type = typeof(ReviewerOutputModel))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<ActionResult<ReviewerOutputModel>> UpdateReviewer([FromQuery] int id, [FromBody] ReviewerUpdateModel reviewerUpdateModel)
+        {
+            try
+            {
+                var updatedReviewer = await _reviewerService.UpdateReviewer(id, reviewerUpdateModel);
+                return Ok(updatedReviewer);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
