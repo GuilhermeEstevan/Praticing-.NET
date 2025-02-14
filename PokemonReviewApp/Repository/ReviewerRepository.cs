@@ -44,5 +44,24 @@ namespace PokemonReviewApp.Repository
         {
             return await _context.Reviewers.AnyAsync(r => r.Id == reviewerId);
         }
+
+        public async Task<Reviewer> CreateReviewer(Reviewer reviewer)
+        {
+            _context.Reviewers.Add(reviewer);
+            await _context.SaveChangesAsync();
+            return reviewer;
+        }
+
+        public async Task<bool> ReviewerNameAlreadyExists(string firstName, string lastName)
+        {
+            var reviewer = await _context.Reviewers
+                                 .FirstOrDefaultAsync(r => r.FirstName
+                                 .ToLower() == firstName.ToLower() && r.LastName
+                                 .ToLower() == lastName.ToLower());
+
+
+            // Se o reviewer for encontrado, retorna true, caso contrário, retorna false
+            return reviewer != null;
+        }
     }
 }

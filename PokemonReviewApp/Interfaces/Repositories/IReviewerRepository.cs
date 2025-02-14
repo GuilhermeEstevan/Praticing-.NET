@@ -9,5 +9,7 @@ namespace PokemonReviewApp.Interfaces.Repositories
         Task<Reviewer> GetReviewerById(int reviewerId);
         Task<ICollection<Review>> GetReviewsByReviewer(int reviewerId);
         Task<bool> ReviewerExists(int reviewerId);
+        Task<Reviewer> CreateReviewer(Reviewer reviewer);
+        Task<bool> ReviewerNameAlreadyExists(string firstName, string lastName);
     }
 }
