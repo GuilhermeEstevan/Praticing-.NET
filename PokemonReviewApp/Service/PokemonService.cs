@@ -43,6 +43,11 @@ namespace PokemonReviewApp.Services
         public async Task<PokemonOutputModel> GetPokemonById(int id)
         {
             var pokemon = await _pokemonRepository.GetPokemonById(id);
+            if (pokemon == null)
+            {
+                throw new KeyNotFoundException($"Pokemon with ID {id} not found.");
+            }
+
 
             var pokemonOutput = _mapper.Map<PokemonOutputModel>(pokemon);
 
@@ -56,6 +61,11 @@ namespace PokemonReviewApp.Services
 
         public async Task<decimal> GetPokemonRating(int pokemonId)
         {
+            if (!await _pokemonRepository.PokemonExist(pokemonId))
+            {
+                throw new KeyNotFoundException($"Pokemon with ID {pokemonId} not found.");
+            }
+
             return await _pokemonRepository.GetPokemonRating(pokemonId);
         }
 
@@ -150,6 +160,17 @@ namespace PokemonReviewApp.Services
 
             var updatedPokemon = await _pokemonRepository.UpdatePokemon(existingPokemon);
             return _mapper.Map<PokemonOutputModel>(updatedPokemon);
+        }
+
+        public async Task<bool> DeletePokemon(int id)
+        {
+            var pokemonExists = await _pokemonRepository.PokemonExist(id);
+            if (!pokemonExists)
+            {
+                throw new ArgumentException("Pokemon not found.");
+            }
+
+            return await _pokemonRepository.DeletePokemon(id);
         }
     }
 }

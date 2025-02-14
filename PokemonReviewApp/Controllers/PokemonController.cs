@@ -2,7 +2,6 @@
 using PokemonReviewApp.Dto;
 using PokemonReviewApp.Interfaces.Services;
 
-
 namespace PokemonReviewApp.Controllers
 {
     [Route("api/[controller]")]
@@ -18,6 +17,7 @@ namespace PokemonReviewApp.Controllers
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PokemonOutputModel>))]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetPokemons()
         {
             try
@@ -27,48 +27,49 @@ namespace PokemonReviewApp.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(PokemonOutputModel))]
         [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetPokemonById(int id)
         {
             try
             {
                 var pokemon = await _pokemonService.GetPokemonById(id);
-                if (pokemon == null)
-                {
-                    return NotFound($"Pokemon with ID {id} not found.");
-                }
-
                 return Ok(pokemon);
+            }
+            catch (KeyNotFoundException ex) 
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
         [HttpGet("{id}/rating")]
         [ProducesResponseType(200, Type = typeof(decimal))]
         [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetPokemonRating(int id)
         {
             try
             {
-                var pokemonExists = await _pokemonService.PokemonExist(id);
-                if (!pokemonExists)
-                    return NotFound($"Pokemon with ID {id} not found.");
-
                 var rating = await _pokemonService.GetPokemonRating(id);
                 return Ok(rating);
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro interno no servidor: {ex.Message}");
+                return StatusCode(500, new { error = $"Erro interno no servidor: {ex.Message}" });
             }
         }
 
@@ -78,13 +79,9 @@ namespace PokemonReviewApp.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> CreatePokemon([FromBody] PokemonInputModel pokemonInputModel)
         {
-     
-
             try
             {
-           
                 var createdPokemon = await _pokemonService.CreatePokemon(pokemonInputModel);
-
                 return CreatedAtAction(nameof(GetPokemonById), new { id = createdPokemon.Id }, createdPokemon);
             }
             catch (ArgumentException ex)
@@ -93,15 +90,14 @@ namespace PokemonReviewApp.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = "Internal server error: " + ex.Message });
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 
-        // PUT api/pokemon?id={id}
         [HttpPut]
         [ProducesResponseType(200, Type = typeof(PokemonOutputModel))]
-        [ProducesResponseType(404)]
         [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<ActionResult<PokemonOutputModel>> UpdatePokemon([FromQuery] int id, [FromBody] PokemonUpdateModel pokemonUpdateModel)
         {
@@ -112,13 +108,42 @@ namespace PokemonReviewApp.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
             }
         }
 
+        [HttpDelete]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeletePokemon([FromQuery] int id)
+        {
+            try
+            {
+                var deleted = await _pokemonService.DeletePokemon(id);
+                if (!deleted)
+                {
+                    return NotFound(new { error = "Pokemon not found." });
+                }
+
+                return NoContent(); 
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Internal server error: {ex.Message}" });
+            }
+        }
     }
 }

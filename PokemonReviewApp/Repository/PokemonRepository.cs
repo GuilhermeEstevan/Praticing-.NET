@@ -84,5 +84,30 @@ namespace PokemonReviewApp.Repository
             await _context.SaveChangesAsync();
             return pokemon;
         }
+
+        public async Task<bool> DeletePokemon(int id)
+        {
+            var pokemon = await _context.Pokemon
+                                        .Include(p => p.PokemonOwners)
+                                        .Include(p => p.PokemonCategories)
+                                        .Include(p => p.Reviews)
+                                        .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (pokemon == null)
+            {
+                return false; 
+            }
+
+            // Removendo todas as relações
+            _context.PokemonOwners.RemoveRange(pokemon.PokemonOwners);
+            _context.PokemonCategories.RemoveRange(pokemon.PokemonCategories);
+            _context.Reviews.RemoveRange(pokemon.Reviews);
+
+            // Removendo o Pokémon
+            _context.Pokemon.Remove(pokemon);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }
